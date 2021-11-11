@@ -1,19 +1,48 @@
 import Head from 'next/head'
 import { styled } from '../stitches.config'
-import StitchesLogo from '../components/StitchesLogo'
+
+import { useExperiment } from "@tstmkrs/nextjs-ab-test";
+import StarWars from './StarWars'
+import Pokemon from './Pokemon'
+
+const PageExperiment = () => {
+  const { Variant } = useExperiment({
+    name: "Page-Test",
+    weight: [50, 50],
+    variants: {
+      A: <>
+        <Head>
+          <title>Star Wars!</title>,
+        </Head>
+        <Container size={{ '@initial': '1', '@bp1': '2' }}>
+          <StarWars />
+        </Container></>,
+      B: <>
+        <Head>
+          <title>Pokemon!</title>
+        </Head>
+        <Container size={{ '@initial': '1', '@bp1': '2' }}>
+          <Pokemon />
+        </Container>
+      </>
+    }
+  });
+
+  return <><Variant /></>
+}
+
+export default function Home() {
+
+  return (
+    <Box css={{ paddingY: '$6' }}>
+      <PageExperiment />
+    </Box>
+  )
+}
+
 
 const Box = styled('div', {})
 
-const Text = styled('p', {
-  fontFamily: '$system',
-  color: '$hiContrast',
-})
-
-const Link = styled('a', {
-  fontFamily: '$system',
-  textDecoration: 'none',
-  color: '$purple600',
-})
 
 const Container = styled('div', {
   marginX: 'auto',
@@ -33,21 +62,3 @@ const Container = styled('div', {
     },
   },
 })
-
-export default function Home() {
-  return (
-    <Box css={{ paddingY: '$6' }}>
-      <Head>
-        <title>Use Stitches with Next.js</title>
-      </Head>
-      <Container size={{ '@initial': '1', '@bp1': '2' }}>
-        <StitchesLogo />
-        <Text as="h1">Hello, from Stitches.</Text>
-        <Text>
-          For full documentation, visit{' '}
-          <Link href="https://stitches.dev">stitches.dev</Link>.
-        </Text>
-      </Container>
-    </Box>
-  )
-}
